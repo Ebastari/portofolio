@@ -1,0 +1,63 @@
+.lc-root {
+  position: absolute;
+  right: clamp(1.25rem, 3vw, 2.5rem);
+  top: 50%;
+  translate: 0 -50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  z-index: 60;
+  pointer-events: none;
+}
+
+.lc-track {
+  position: relative;
+  width: 1.5px;
+  height: clamp(80px, 18vh, 160px);
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 1px;
+}
+
+.lc-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.75);
+  border-radius: 1px;
+  transition: height 0.35s ease;
+}
+
+.lc-tick {
+  position: absolute;
+  left: 50%;
+  translate: -50% -50%;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.lc-tick--active {
+  background: rgba(255, 255, 255, 0.85);
+  transform: translate(-50%, -50%) scale(1.2);
+}
+
+.lc-label {
+  font-family: "DM Mono", "Roboto Mono", monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.45);
+  line-height: 1;
+}
+
+.lc-sep {
+  color: rgba(255, 255, 255, 0.2);
+}
+
+/* Hide on very small screens to avoid overlap with overlay text */
+@media (max-width: 400px) {
+  .lc-root { display: none; }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "Agung Laksono — Reclamation Portfolio",
+  "short_name": "AL Portfolio",
+  "description": "From Disturbed Land to Intelligent Restoration",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0d1a0d",
+  "theme_color": "#0d1a0d",
+  "icons": [
+    {
+      "src": "./favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
