@@ -10,45 +10,45 @@ export const LEVELS: Level[] = [
   // 00 — Hero
   {
     src: "/levels/level-00.png",
-    eyebrow: "00 — Kalimantan Selatan, Indonesia",
+    eyebrow: "Agung Laksono, S.Hut — Kalimantan Selatan",
     headline: "FROM DISTURBED LAND\nTO INTELLIGENT RESTORATION",
-    body: "",
+    body: "Ini adalah pekerjaan saya.",
     variant: "default",
   },
 
   // 01 — Profil
   {
     src: "/levels/level-01.png",
-    eyebrow: "01 — Section Head Revegetasi",
+    eyebrow: "01 — Tentang Saya",
     headline: "Agung Laksono, S.Hut",
-    body: "Environmental & Reclamation Specialist · ±5 Tahun Pengalaman\nPT Energi Batubara Lestari · Hasnur Group · Maret 2023 – Sekarang\nBanjarbaru, Kalimantan Selatan",
+    body: "Section Head Revegetasi · PT Energi Batubara Lestari · Hasnur Group\n±5 tahun memimpin reklamasi pascatambang dari lapangan hingga regulasi — dengan keahlian langka yang menggabungkan teknis revegetasi, perizinan kehutanan, GIS/remote sensing, dan pengembangan AI.",
     variant: "default",
   },
 
   // 02 — Penataan Lahan
   {
     src: "/levels/level-02.png",
-    eyebrow: "02 — Penataan Lahan Pascatambang",
-    headline: "Dari Tambang\nke Tapak Tanam",
-    body: "Pembersihan lahan · Pengelolaan & penebaran topsoil\nPembuatan teras · Drainase · Pengendalian erosi\nFase P0 — Persiapan Lahan · Permen ESDM No. 10/2023",
+    eyebrow: "02 — Penataan Lahan",
+    headline: "Saya Memimpin\nSeluruh Fase Lapangan",
+    body: "Saya mengawasi langsung setiap tahapan: pembersihan lahan, pengelolaan & penebaran topsoil, konstruksi teras, sistem drainase, dan pengendalian erosi — sebelum bibit pertama ditanam.\nFase P0 · P1 · P2 sesuai Permen ESDM No. 10/2023.",
     variant: "default",
   },
 
-  // 03 — Standar & Regulasi
+  // 03 — Regulasi & Perizinan
   {
     src: "/levels/level-03.png",
-    eyebrow: "03 — Perizinan & Kepatuhan",
-    headline: "Reklamasi\nBerbasis Regulasi",
-    body: "IPPKH · PNBP PKH · AMDAL · RKL-RPL · PROPER Biru (2023–2024)\nGanis CANHUT · Ganis NENHUT · BNSP GANISPH Perencanaan Hutan (2024)\nKoordinasi ESDM · KLHK · Dinas Lingkungan Hidup",
+    eyebrow: "03 — Perizinan & Regulasi",
+    headline: "Saya Navigasi\nRegulasi Kehutanan",
+    body: "Saya mengelola siklus penuh IPPKH, verifikasi PNBP PKH, AMDAL, RKL-RPL, dan pelaporan ke ESDM & KLHK — langsung, bukan melalui konsultan.\nGanis CANHUT · Ganis NENHUT · BNSP Perencanaan Hutan (2024) · PROPER Biru (2023–2024) · Operator SIMPEL · Sinergi KLHK · Sicerdas.",
     variant: "default",
   },
 
   // 04 — Potting Method
   {
     src: "/levels/level-04.png",
-    eyebrow: "04 — Inovasi Lapangan",
+    eyebrow: "04 — Inovasi Saya",
     headline: "Potting Method",
-    body: "Solusi revegetasi pada lahan defisit topsoil — bibit ditanam pada media terkontrol (polybag/pot) sehingga pertumbuhan optimal tanpa bergantung pada ketersediaan tanah pucuk.\nDiciptakan & diterapkan di PT Energi Batubara Lestari · Hasnur Group",
+    body: "Lahan pascatambang sering kekurangan topsoil. Saya menciptakan Potting Method: bibit ditanam pada media terkontrol (polybag/pot) sehingga tumbuh optimal tanpa bergantung pada tanah pucuk yang tersedia.\nDiterapkan & terbukti berhasil di lapangan PT Energi Batubara Lestari · Hasnur Group.",
     variant: "innovation",
   },
 
@@ -56,8 +56,8 @@ export const LEVELS: Level[] = [
   {
     src: "/levels/level-05.png",
     eyebrow: "05 — Manajemen Nursery",
-    headline: "Persemaian\nSkala Produksi",
-    body: "Pengadaan benih · Penyemaian · Penyapihan · Seleksi & distribusi bibit siap tanam\nChatbot AI berbasis DeepSeek (Google Apps Script) untuk otomatisasi data pembibitan\nPT Taiyoung Engreen 2021–2023 · PT Energi Batubara Lestari 2023–Sekarang",
+    headline: "Saya Kelola\nPersemaian Skala Produksi",
+    body: "Dari pengadaan benih hingga bibit siap tanam — saya mengendalikan seluruh rantai: penyemaian, penyapihan, seleksi, dan distribusi ke lapangan.\nSaya juga membangun Chatbot AI berbasis DeepSeek (Google Apps Script) untuk otomatisasi data pembibitan — mempercepat pengolahan data produksi nursery.",
     variant: "default",
   },
 
@@ -65,53 +65,53 @@ export const LEVELS: Level[] = [
   {
     src: "/levels/level-06.png",
     eyebrow: "06 — Eksekusi Penanaman",
-    headline: "Target Tanam\nTerkendali",
-    body: "Fase P1 · Kualitas & kuantitas terjaga · Survival rate termonitor\nMemimpin GL Penataan Lahan & GL Nursery · Koordinasi tim lapangan multi-unit\nEvaluasi kinerja periodik & pembinaan SDM lapangan",
+    headline: "Target Tanam\nSaya Pastikan Tercapai",
+    body: "Saya memimpin langsung dua Group Leader: GL Penataan Lahan dan GL Nursery — beserta seluruh tim lapangan di bawahnya.\nPerencanaan harian, mingguan, bulanan; evaluasi survival rate; pembinaan kapasitas teknis SDM lapangan — semua di bawah tanggung jawab saya.",
     variant: "default",
   },
 
   // 07 — Vegetasi Tumbuh
   {
     src: "/levels/level-07.png",
-    eyebrow: "07 — Revegetasi Berhasil",
-    headline: "Kanopi Menutup,\nEkosistem Pulih",
-    body: "Fase P2 · Pemeliharaan & evaluasi berkala\nPemantauan tutupan lahan via ArcGIS Pro & Google Earth Engine\nPelaporan kemajuan reklamasi triwulanan & tahunan ke ESDM & KLHK",
+    eyebrow: "07 — Hasil Kerja Saya",
+    headline: "Kanopi Menutup.\nLereng Stabil.",
+    body: "Ini bukan sekadar penghijauan — ini ekosistem yang dipulihkan. Survival rate terpantau, tutupan lahan terverifikasi via ArcGIS Pro & Google Earth Engine, dan kemajuan reklamasi terdokumentasi dalam laporan resmi triwulanan & tahunan ke ESDM & KLHK.",
     variant: "default",
   },
 
   // 08 — Silvopastura
   {
     src: "/levels/level-08.png",
-    eyebrow: "08 — Inovasi Lapangan",
+    eyebrow: "08 — Inovasi Saya",
     headline: "Silvopastura",
-    body: "Integrasi reklamasi + peternakan — kewajiban revegetasi sekaligus nilai ekonomi produktif dari lahan yang sedang dipulihkan.\nQCC Juara 3 Tingkat Perusahaan (2024) · Peningkatan Nilai Ekonomi di Lahan Marginal\nPT Energi Batubara Lestari · Hasnur Group",
+    body: "Saya merancang model Silvopastura: reklamasi lahan diintegrasikan dengan kegiatan peternakan — kewajiban revegetasi sekaligus menghasilkan nilai ekonomi produktif dari lahan yang sedang dipulihkan.\nQCC Juara 3 Tingkat Perusahaan (2024) · PT Energi Batubara Lestari · Hasnur Group.",
     variant: "innovation",
   },
 
   // 09 — Montana Camera AI
   {
     src: "/levels/level-09.png",
-    eyebrow: "09 — Inovasi Digital",
+    eyebrow: "09 — Inovasi Saya",
     headline: "Montana Camera AI",
-    body: "Sistem geotagging real-time berbasis AI · Analisis NDVI · Estimasi biomassa & cadangan karbon · Deteksi kesehatan vegetasi (HSV) · PWA offline-first\nHKI No. 001165981 (2026) · Inventor: Agung Laksono, S.Hut\nLive: camera.montana-tech.info · GitHub 723 kontribusi",
+    body: "Saya membangun & mendeploy sendiri: sistem monitoring geotagging real-time berbasis AI yang mengintegrasikan analisis NDVI, estimasi biomassa & cadangan karbon, serta deteksi kesehatan vegetasi (HSV).\nHKI Terdaftar No. 001165981 (2026) · PWA offline-first · Live: camera.montana-tech.info · 723 kontribusi GitHub.",
     variant: "innovation",
   },
 
   // 10 — GIS & Remote Sensing
   {
     src: "/levels/level-10.png",
-    eyebrow: "10 — Geospasial & Remote Sensing",
-    headline: "Analisis Spasial\nEkosistem",
-    body: "ArcGIS Pro · ArcMap 10.4 · Global Mapper · Google Earth Engine\nAnalisis NDVI · Penafsiran stok karbon · Pemetaan drone & ortofoto\nKepala Staf GIS · PT Taiyoung Engreen 2021–2023",
+    eyebrow: "10 — Keahlian Spasial",
+    headline: "Lapangan & Data —\nSaya Kuasai Keduanya",
+    body: "Saya bukan hanya praktisi lapangan. Saya mengoperasikan ArcGIS Pro, ArcMap 10.4, Global Mapper, dan Google Earth Engine untuk analisis tutupan lahan, penafsiran stok karbon, dan pemetaan drone.\nSebelumnya: Kepala Staf GIS & Kepala Sub Bagian Kelola Lingkungan · PT Taiyoung Engreen (2021–2023).",
     variant: "data",
   },
 
-  // 11 — Karbon & Penutup
+  // 11 — Karbon & CTA
   {
     src: "/levels/level-11.png",
-    eyebrow: "11 — Karbon & Biomassa",
-    headline: "Restorasi yang Terukur\ndan Dapat Diverifikasi",
-    body: "Estimasi biomassa & cadangan karbon · Pelatihan Stok Karbon Folu Net Sink IPB (2022)\nMy Montana AI — Platform Revegetasi & Monitoring Karbon Terintegrasi\nS.Hut Instiper Yogyakarta · IPK 3.45 · TOEFL ITP 500",
+    eyebrow: "11 — Nilai yang Saya Bawa",
+    headline: "Reklamasi Terukur.\nKarbon Terverifikasi.",
+    body: "Pelatihan Stok Karbon Folu Net Sink · IPB (2022) · S.Hut Instiper Yogyakarta · IPK 3.45 · TOEFL ITP 500\nMy Montana AI — Platform Revegetasi & Monitoring Karbon Terintegrasi\nHubungi saya untuk kolaborasi reklamasi, proyek karbon, atau pengembangan sistem monitoring.",
     variant: "data",
   },
 ];
