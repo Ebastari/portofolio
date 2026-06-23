@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Source-only / debug artifacts (not needed for the deployed site)
+frames-original/
+debug-*.png
+vite-output.log

@@ -1,0 +1,1015 @@
+/* ─── Stage ─────────────────────────────────────────────────────────────────── */
+
+.ms-scroll-space {
+  position: relative;
+}
+
+.ms-stage {
+  position: relative;
+  width: 100%;
+  height: 100vh; /* match the scroll-space vh units so the pin can't leave a gap */
+  overflow: hidden;
+  background: #080f08;
+}
+
+/* ─── Image layers ─────────────────────────────────────────────────────────── */
+
+.ms-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  will-change: opacity, transform;
+  transform-origin: center center;
+  background: #080f08;
+  display: block;
+}
+
+.ms-layer--cover {
+  object-fit: cover;
+  object-position: center center;
+}
+
+.ms-layer--contain {
+  object-fit: contain;
+  object-position: center center;
+}
+
+/* Closing screen — 1 : 3 split: quote band on top, looping autoplay video below. */
+.ms-contact-stage {
+  display: flex;
+  flex-direction: column;
+  background: #070d07;
+}
+.ms-contact-quote {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: clamp(0.75rem, 2.5vh, 2rem) clamp(1.5rem, 6vw, 4rem);
+  background: linear-gradient(180deg, #0c150c 0%, #070d07 100%);
+}
+.ms-contact-quote-mark {
+  font-family: "Barlow Condensed", Georgia, serif;
+  font-size: clamp(1.8rem, 4vw, 3.2rem);
+  line-height: 0.4;
+  color: rgba(160, 255, 110, 0.92);
+}
+.ms-contact-quote p {
+  font-family: "Barlow Condensed", "Arial Narrow", Arial, sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.2rem, 2.7vw, 2.5rem);
+  line-height: 1.12;
+  letter-spacing: 0.005em;
+  color: #fff;
+  max-width: 26ch;
+  margin: 0.3rem 0 0;
+  text-shadow: 0 1px 14px rgba(0, 0, 0, 0.5);
+}
+.ms-contact-video {
+  flex: 3 1 0;
+  min-height: 0;
+  width: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  background: #000;
+}
+
+/* Flythrough canvas — graded in JS; this just sets the resting backdrop */
+.ms-canvas {
+  background: #0e0f11;
+}
+
+/* ─── Slide-0 interactive split-reveal hero ─────────────────────────────────── */
+
+.ms-hero-layer { background: #070d09; }
+
+.ms-hero-split {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #070d09;
+  /* driven per-frame from JS (see HeroSplit) */
+  --mine: 0;
+  --forest: 0;
+  --sun: 0;
+}
+
+/* Whole plate gets a hair of scale so the parallax shift can't reveal an edge. */
+.ms-hero-media {
+  position: absolute;
+  inset: 0;
+  transform: scale(1.045);
+  will-change: transform;
+}
+
+.ms-hero-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 45%;   /* keep the engineer + horizon framed */
+  display: block;
+}
+
+/* Resting cinematic grade — held back so the two "alive" grades have clear
+   headroom to lift into when the cursor favours a side. */
+.ms-hero-img--base {
+  filter: brightness(0.88) contrast(1.04) saturate(1.0);
+}
+
+/* Mining side — industrial clarity: brighter AND noticeably sharper/contrastier
+   so benches, haul roads and excavators read as "revealed". Masked to the left,
+   faded in by --mine. */
+.ms-hero-img--mine {
+  filter: brightness(1.13) contrast(1.26) saturate(1.06);
+  opacity: var(--mine);
+  will-change: opacity;
+  -webkit-mask-image: linear-gradient(to right, #000 0%, #000 46%, rgba(0,0,0,0) 78%);
+          mask-image: linear-gradient(to right, #000 0%, #000 46%, rgba(0,0,0,0) 78%);
+}
+
+/* Forest side — warmer, lusher greens, masked to the right, faded by --forest. */
+.ms-hero-img--forest {
+  filter: brightness(1.13) contrast(1.05) saturate(1.26);
+  opacity: var(--forest);
+  will-change: opacity;
+  -webkit-mask-image: linear-gradient(to left, #000 0%, #000 46%, rgba(0,0,0,0) 78%);
+          mask-image: linear-gradient(to left, #000 0%, #000 46%, rgba(0,0,0,0) 78%);
+}
+
+/* Soft golden sun bloom over the reclamation side — rises with --sun. */
+.ms-hero-sun {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: var(--sun);
+  mix-blend-mode: screen;
+  will-change: opacity;
+  background: radial-gradient(
+    120% 90% at 86% 12%,
+    rgba(255, 214, 140, 0.5) 0%,
+    rgba(255, 190, 110, 0.2) 26%,
+    rgba(255, 180, 90, 0) 55%
+  );
+}
+
+/* ─── Intro loader ──────────────────────────────────────────────────────────── */
+
+.ms-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.1rem;
+  background: radial-gradient(circle at 50% 42%, #0c1a0c 0%, #050b05 72%);
+  transition: opacity 0.7s ease;
+}
+
+.ms-loader--done {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ms-loader-brand {
+  font-family: "DM Mono", monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(160, 255, 110, 0.9);
+}
+
+.ms-loader-track {
+  width: min(240px, 60vw);
+  height: 2px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.ms-loader-fill {
+  height: 100%;
+  background: linear-gradient(90deg, rgba(100, 220, 100, 0.7), rgba(160, 255, 110, 0.95));
+  transition: width 0.25s ease;
+}
+
+.ms-loader-pct {
+  font-family: "DM Mono", monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* ─── Welcome contact icons ─────────────────────────────────────────────────── */
+
+.ms-welcome-divider {
+  width: 1px;
+  height: 1.5rem;
+  background: rgba(255, 255, 255, 0.18);
+  margin: 0 0.15rem;
+  align-self: center;
+}
+
+.ms-welcome-social {
+  display: inline-flex;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.ms-social-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 7px;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  background: rgba(20, 20, 20, 0.5);
+  color: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(6px);
+  transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.15s;
+}
+
+.ms-social-icon:hover {
+  background: rgba(55, 55, 55, 0.65);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.ms-social-icon:focus-visible {
+  outline: 2px solid rgba(100, 220, 100, 0.8);
+  outline-offset: 3px;
+}
+
+.ms-social-icon--wa:hover { border-color: rgba(37, 211, 102, 0.75); color: #25d366; }
+.ms-social-icon--in:hover { border-color: rgba(40, 130, 220, 0.85); color: #4aa3e0; }
+.ms-social-icon--gh:hover { border-color: rgba(255, 255, 255, 0.7); color: #fff; }
+
+@media (max-width: 640px) {
+  .ms-welcome-divider { display: none; }
+  .ms-social-icon { width: 2rem; height: 2rem; }
+}
+
+/* ─── Scroll progress rail ──────────────────────────────────────────────────── */
+
+.ms-progress {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 3px;
+  height: 100vh;
+  height: 100dvh;
+  z-index: 80;
+  background: rgba(255, 255, 255, 0.06);
+  pointer-events: none;
+}
+
+.ms-progress-fill {
+  position: absolute;
+  inset: 0;
+  transform: scaleY(0);
+  transform-origin: top center;
+  background: linear-gradient(to bottom, rgba(160, 255, 110, 0.9), rgba(60, 160, 70, 0.55));
+}
+
+
+/* ─── Overlay enter animation ───────────────────────────────────────────────── */
+
+@keyframes ms-overlay-enter {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Level overlay ─────────────────────────────────────────────────────────── */
+
+.ms-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  /* bottom 6.5rem = CTA bar height (~4.5rem) + 2rem breathing room */
+  padding: clamp(2rem, 5vh, 4rem) clamp(1.5rem, 5vw, 4rem) 6.5rem;
+  pointer-events: none;
+  animation: ms-overlay-enter 0.4s ease forwards;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.70) 0%,
+    rgba(0, 0, 0, 0.25) 45%,
+    transparent 70%
+  );
+}
+
+.ms-overlay--hero {
+  justify-content: center;
+  align-items: flex-start;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.72) 0%,
+    rgba(0, 0, 0, 0.2) 60%,
+    transparent 100%
+  );
+}
+
+.ms-overlay--data {
+  background: linear-gradient(
+    to top,
+    rgba(0, 20, 10, 0.80) 0%,
+    rgba(0, 20, 10, 0.30) 45%,
+    transparent 70%
+  );
+}
+
+.ms-eyebrow {
+  font-family: "DM Mono", monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(160, 255, 110, 0.97);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.9), 0 0 4px rgba(0, 0, 0, 0.7);
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.ms-headline {
+  font-family: "Barlow Condensed", "Arial Narrow", Arial, sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.6rem, 3.5vw, 2.8rem);
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  color: #fff;
+  margin: 0 0 0.75rem;
+  max-width: 22ch;
+}
+
+/* Timeline-driven narration captions: GSAP scrubs these in sync with the video,
+   so the CSS auto-enter animation is disabled here. */
+.ms-narr { animation: none; }
+
+/* Per-line mask so the headline can wipe up on enter / away on exit.
+   padding+negative-margin keeps descenders from clipping without changing layout. */
+.ms-line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+.ms-line-inner {
+  display: block;
+  will-change: transform;
+}
+
+.ms-headline--hero {
+  font-size: clamp(2.2rem, 5vw, 4.2rem);
+  max-width: 16ch;
+}
+
+.ms-body {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: clamp(0.75rem, 1.1vw, 0.88rem);
+  line-height: 1.72;
+  color: rgba(255, 255, 255, 0.68);
+  margin: 0;
+  max-width: 58ch;
+}
+
+/* ─── CTA links ─────────────────────────────────────────────────────────────── */
+
+.ms-cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1.25rem;
+  pointer-events: all;
+}
+
+.ms-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.55rem 1.2rem;
+  background: rgba(20, 20, 20, 0.5);
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  border-radius: 3px;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  backdrop-filter: blur(6px);
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+  white-space: nowrap;
+}
+
+.ms-cta-btn:hover {
+  background: rgba(60, 60, 60, 0.65);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #fff;
+}
+
+.ms-cta-btn:focus-visible {
+  outline: 2px solid rgba(100, 220, 100, 0.8);
+  outline-offset: 3px;
+}
+
+.ms-cta-btn--primary {
+  background: rgba(40, 100, 40, 0.45);
+  border-color: rgba(100, 200, 100, 0.55);
+  color: rgba(180, 255, 180, 0.95);
+}
+
+.ms-cta-btn--primary:hover {
+  background: rgba(60, 140, 60, 0.6);
+  border-color: rgba(140, 220, 140, 0.8);
+  color: #fff;
+}
+
+.ms-cta-btn--demo {
+  background: rgba(20, 60, 100, 0.45);
+  border-color: rgba(80, 160, 255, 0.45);
+  color: rgba(160, 210, 255, 0.95);
+}
+
+.ms-cta-btn--demo:hover {
+  background: rgba(30, 80, 130, 0.6);
+  border-color: rgba(100, 180, 255, 0.7);
+  color: #fff;
+}
+
+/* ─── Cert overlay ──────────────────────────────────────────────────────────── */
+
+.ms-cert-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: clamp(1.5rem, 4vw, 3rem) clamp(1.5rem, 5vw, 4rem) 6.5rem;
+  pointer-events: none;
+  animation: ms-overlay-enter 0.4s ease forwards;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.68) 0%,
+    rgba(0, 0, 0, 0.18) 38%,
+    transparent 62%
+  );
+}
+
+.ms-cert-tag {
+  font-family: "DM Mono", monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: rgba(160, 255, 110, 0.85);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.9);
+  margin-bottom: auto;
+  padding-top: 0.25rem;
+}
+
+.ms-cert-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 1rem;
+}
+
+.ms-cert-eyebrow {
+  font-family: "DM Mono", monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(160, 255, 110, 0.97);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.9);
+}
+
+.ms-cert-title {
+  font-family: "Barlow Condensed", "Arial Narrow", Arial, sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.4rem, 3vw, 2.2rem);
+  line-height: 1.1;
+  color: #fff;
+  margin: 0;
+}
+
+.ms-cert-info {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: clamp(0.7rem, 1vw, 0.8rem);
+  color: rgba(255, 255, 255, 0.48);
+  margin: 0;
+}
+
+/* Progress counter */
+.ms-cert-counter {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.ms-cert-num,
+.ms-cert-total {
+  font-family: "DM Mono", monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.4);
+  min-width: 1.6rem;
+}
+
+.ms-cert-num {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.ms-cert-track {
+  flex: 1;
+  max-width: 100px;
+  height: 1.5px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 1px;
+  overflow: hidden;
+}
+
+.ms-cert-fill {
+  height: 100%;
+  background: rgba(100, 220, 100, 0.7);
+  transition: width 0.4s ease;
+}
+
+/* ─── Welcome overlay (slide 0) ─────────────────────────────────────────────── */
+
+.ms-welcome-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: clamp(2rem, 5vh, 4rem) clamp(1.5rem, 5vw, 4rem);
+  pointer-events: none;
+  animation: ms-overlay-enter 0.4s ease forwards;
+  /* Readable left "ink column" that fades to clear over the engineer + forest,
+     plus a faint floor gradient — text stays legible without hiding the image. */
+  background:
+    linear-gradient(
+      90deg,
+      rgba(6, 12, 8, 0.86) 0%,
+      rgba(6, 12, 8, 0.62) 28%,
+      rgba(6, 12, 8, 0.18) 50%,
+      rgba(6, 12, 8, 0) 66%
+    ),
+    linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.42) 0%,
+      rgba(0, 0, 0, 0.08) 32%,
+      transparent 55%
+    );
+}
+
+.ms-welcome-sub {
+  font-family: "DM Mono", monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(160, 255, 110, 0.97);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.9), 0 0 4px rgba(0, 0, 0, 0.7);
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
+.ms-welcome-heading {
+  font-size: clamp(2.3rem, 5.2vw, 4.6rem);
+  line-height: 1.04;
+  letter-spacing: -0.015em;
+  color: #fff;
+  margin: 0 0 1.25rem;
+  display: flex;
+  flex-direction: column;
+  text-shadow: 0 2px 22px rgba(0, 0, 0, 0.65), 0 1px 4px rgba(0, 0, 0, 0.55);
+}
+
+/* Each line is a VariableProximity span (Roboto Flex). Resting weight is set
+   here so it reads bold/legible before — and between — cursor passes. */
+.ms-welcome-heading-line {
+  font-family: "Roboto Flex", "Barlow Condensed", sans-serif;
+  font-variation-settings: "wght" 600, "opsz" 144;
+}
+
+.ms-welcome-greeting {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: clamp(0.86rem, 1.15vw, 1rem);
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+  margin: 0 0 0.5rem;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.7);
+}
+
+.ms-welcome-desc {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: clamp(0.76rem, 1vw, 0.88rem);
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.82);
+  margin: 0;
+  max-width: 52ch;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.65);
+}
+
+/* ─── About overlay (slide 1) ────────────────────────────────────────────────── */
+
+.ms-about-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: clamp(2rem, 5vh, 4rem) clamp(1.5rem, 5vw, 4rem);
+  pointer-events: none;
+  animation: ms-overlay-enter 0.4s ease forwards;
+  /* Bright aerial behind the text → deeper floor scrim so the bio reads. */
+  background: linear-gradient(
+    to top,
+    rgba(4, 9, 5, 0.93) 0%,
+    rgba(4, 9, 5, 0.74) 30%,
+    rgba(4, 9, 5, 0.32) 58%,
+    transparent 84%
+  );
+}
+
+.ms-about-bio {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: clamp(0.72rem, 1vw, 0.86rem);
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0 0 0.7rem;
+  max-width: 68ch;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.7);
+}
+
+.ms-about-note {
+  font-family: "DM Mono", monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0.4rem 0 0;
+  max-width: 64ch;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.7);
+}
+
+/* ─── Contact overlay (last slide) ─────────────────────────────────────────── */
+
+.ms-contact-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: clamp(2rem, 5vh, 4rem) clamp(1.5rem, 5vw, 4rem) 6rem;
+  pointer-events: none;
+  animation: ms-overlay-enter 0.4s ease forwards;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.65) 0%,
+    rgba(0, 0, 0, 0.30) 50%,
+    transparent 100%
+  );
+}
+
+.ms-contact-heading {
+  font-family: "Barlow Condensed", "Arial Narrow", Arial, sans-serif;
+  font-weight: 700;
+  font-size: clamp(2.8rem, 7vw, 6rem);
+  letter-spacing: 0.06em;
+  color: #fff;
+  margin: 0 0 0.25rem;
+  line-height: 1;
+}
+
+.ms-contact-thanks {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: clamp(0.88rem, 1.3vw, 1.05rem);
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.88);
+  margin: 0 0 1.5rem;
+}
+
+.ms-contact-body {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: clamp(0.7rem, 1.05vw, 0.84rem);
+  line-height: 1.78;
+  color: rgba(255, 255, 255, 0.58);
+  margin: 0 0 0.6rem;
+}
+
+.ms-contact-closing {
+  margin-top: 1.5rem;
+  font-family: "Barlow Condensed", "Arial Narrow", Arial, sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.1rem, 2vw, 1.5rem);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(160, 255, 110, 0.97);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.9);
+}
+
+/* ─── Hero level-00 scroll hint (inline, after body text) ──────────────────── */
+
+.ms-hero-scroll {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+  opacity: 0.32;
+  pointer-events: none;
+}
+
+.ms-hero-scroll-line {
+  width: 1.5px;
+  height: 2.8rem;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.75), transparent);
+  animation: ms-pulse 2.8s ease-in-out infinite;
+  margin-left: 2px;
+}
+
+/* ─── Persistent CTA bar ────────────────────────────────────────────────────── */
+
+.ms-persistent-cta {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  translate: -50% 0;
+  display: flex;
+  gap: 0.55rem;
+  z-index: 70;
+  pointer-events: all;
+  animation: ms-cta-in 0.35s ease;
+}
+
+@keyframes ms-cta-in {
+  from { opacity: 0; translate: -50% 8px; }
+  to   { opacity: 1; translate: -50% 0;   }
+}
+
+.ms-cta-btn--docs {
+  background: rgba(20, 60, 100, 0.45);
+  border: 1.5px solid rgba(80, 160, 255, 0.45);
+  color: rgba(160, 210, 255, 0.95);
+  cursor: pointer;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 0.78rem;
+  padding: 0.55rem 1.2rem;
+  border-radius: 3px;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+  white-space: nowrap;
+}
+
+.ms-cta-btn--docs:hover {
+  background: rgba(30, 80, 130, 0.6);
+  border-color: rgba(100, 180, 255, 0.7);
+  color: #fff;
+}
+
+.ms-cta-btn--docs:focus-visible {
+  outline: 2px solid rgba(100, 180, 255, 0.8);
+  outline-offset: 3px;
+}
+
+/* ─── Welcome actions (play + download CV, slide 0) ────────────────────────── */
+
+.ms-welcome-actions {
+  position: absolute;
+  bottom: 2rem;
+  left: clamp(1.5rem, 5vw, 4rem);
+  z-index: 60;
+  display: flex;
+  gap: 0.55rem;
+  align-items: center;
+  pointer-events: all;
+}
+
+.ms-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.5rem 1.1rem;
+  border-radius: 3px;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  text-decoration: none;
+  border: 1.5px solid;
+  backdrop-filter: blur(8px);
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+  white-space: nowrap;
+}
+
+.ms-action-btn--play {
+  background: rgba(15, 50, 20, 0.55);
+  border-color: rgba(100, 200, 100, 0.5);
+  color: rgba(160, 255, 140, 0.95);
+}
+
+.ms-action-btn--play:hover {
+  background: rgba(25, 75, 35, 0.72);
+  border-color: rgba(140, 220, 140, 0.8);
+  color: #fff;
+}
+
+.ms-action-btn--home {
+  background: rgba(15, 50, 20, 0.55);
+  border-color: rgba(100, 200, 100, 0.5);
+  color: rgba(160, 255, 140, 0.95);
+}
+
+.ms-action-btn--home:hover {
+  background: rgba(25, 75, 35, 0.72);
+  border-color: rgba(140, 220, 140, 0.8);
+  color: #fff;
+}
+
+.ms-action-btn--cv {
+  background: rgba(20, 20, 45, 0.55);
+  border-color: rgba(150, 150, 220, 0.4);
+  color: rgba(195, 195, 255, 0.88);
+}
+
+.ms-action-btn--cv:hover {
+  background: rgba(40, 40, 80, 0.68);
+  border-color: rgba(180, 180, 240, 0.7);
+  color: #fff;
+}
+
+.ms-action-btn:focus-visible {
+  outline: 2px solid rgba(100, 220, 100, 0.75);
+  outline-offset: 3px;
+}
+
+/* CV button in persistent CTA bar */
+.ms-cta-btn--cv {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.38rem;
+  text-decoration: none;
+  background: rgba(20, 20, 45, 0.45);
+  border-color: rgba(150, 150, 220, 0.38);
+  color: rgba(195, 195, 255, 0.88);
+}
+
+.ms-cta-btn--cv:hover {
+  background: rgba(40, 40, 80, 0.6);
+  border-color: rgba(180, 180, 240, 0.65);
+  color: #fff;
+}
+
+.ms-cta-btn--cv:focus-visible {
+  outline: 2px solid rgba(150, 150, 230, 0.8);
+  outline-offset: 3px;
+}
+
+/* ─── Scroll hint ───────────────────────────────────────────────────────────── */
+
+.ms-scroll-hint {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  translate: -50% 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  pointer-events: none;
+  z-index: 60;
+}
+
+.ms-scroll-label {
+  font-family: "DM Mono", monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.ms-scroll-line {
+  width: 1.5px;
+  height: 2.5rem;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.5), transparent);
+  animation: ms-pulse 2s ease-in-out infinite;
+}
+
+@keyframes ms-pulse {
+  0%, 100% { opacity: 0.5; transform: scaleY(1); }
+  50%       { opacity: 1;   transform: scaleY(0.65); }
+}
+
+/* ─── Responsive ────────────────────────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  /* Overlay — centered text, extra bottom clearance for CTA bar (may wrap 2 rows) */
+  .ms-overlay {
+    align-items: center;
+    text-align: center;
+    padding: clamp(1rem, 3vh, 2rem) 1.25rem 7.5rem;
+  }
+
+  .ms-overlay--hero {
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  .ms-headline        { font-size: clamp(1.4rem, 6vw, 2rem); max-width: 100%; }
+  .ms-headline--hero  { font-size: clamp(1.8rem, 8vw, 2.8rem); }
+  .ms-body            { font-size: 0.78rem; max-width: 100%; }
+  .ms-eyebrow         { font-size: 0.58rem; }
+  .ms-cta             { justify-content: center; gap: 0.45rem; }
+  .ms-cta-btn         { font-size: 0.7rem; padding: 0.4rem 0.85rem; }
+  .ms-cert-title      { font-size: clamp(1.1rem, 5vw, 1.6rem); }
+
+  /* Cert overlay — centered on mobile */
+  .ms-cert-overlay {
+    align-items: center;
+    text-align: center;
+    padding: 1rem 1.25rem 7.5rem;
+  }
+
+  /* Welcome overlay — mobile */
+  .ms-welcome-overlay {
+    justify-content: flex-end;
+    padding: 1rem 1.25rem 2rem;
+  }
+  .ms-welcome-heading { font-size: clamp(1.8rem, 7vw, 2.8rem); }
+  .ms-welcome-desc    { max-width: 100%; }
+
+  /* About overlay — mobile (no CTA on slides 0-1) */
+  .ms-about-overlay {
+    padding: 1rem 1.25rem 2.5rem;
+  }
+  .ms-about-bio  { font-size: 0.72rem; max-width: 100%; }
+  .ms-about-note { font-size: 0.54rem; max-width: 100%; }
+
+  /* Contact overlay — mobile */
+  .ms-contact-overlay {
+    padding: 1rem 1.25rem 7.5rem;
+  }
+  .ms-contact-heading { font-size: clamp(2.2rem, 10vw, 3.5rem); }
+  .ms-contact-body    { font-size: 0.72rem; }
+
+  /* Persistent CTA — stretch full width and wrap */
+  .ms-persistent-cta {
+    left: 1rem;
+    right: 1rem;
+    translate: 0;
+    flex-wrap: wrap;
+    justify-content: center;
+    bottom: 1rem;
+    gap: 0.4rem;
+  }
+
+  .ms-cta-btn--docs {
+    font-size: 0.7rem;
+    padding: 0.4rem 0.85rem;
+  }
+
+  /* Welcome overlay — extra bottom padding so action buttons don't overlap text */
+  .ms-welcome-overlay {
+    padding: 1rem 1.25rem 5.5rem;
+  }
+
+  /* Action buttons — full-width row centered at bottom */
+  .ms-welcome-actions {
+    left: 1rem;
+    right: 1rem;
+    bottom: 1rem;
+    justify-content: center;
+  }
+
+  .ms-action-btn {
+    font-size: 0.68rem;
+    padding: 0.4rem 0.85rem;
+  }
+
+  .ms-cta-btn--cv { font-size: 0.7rem; padding: 0.4rem 0.85rem; }
+
+  /* Scroll hint — clear of welcome overlay (no CTA on slide 0) */
+  .ms-scroll-hint { bottom: 2rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ms-layer                    { will-change: opacity; }
+  .ms-scroll-line              { animation: none; }
+  .ms-cert-fill                { transition: none; }
+  .ms-overlay, .ms-cert-overlay,
+  .ms-welcome-overlay, .ms-about-overlay,
+  .ms-contact-overlay { animation: none; opacity: 1; transform: none; }
+}

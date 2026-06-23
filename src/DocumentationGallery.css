@@ -1,0 +1,375 @@
+/* ─── Modal backdrop ────────────────────────────────────────────────────────── */
+
+.dg-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.84);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  backdrop-filter: blur(7px);
+  animation: dg-in 0.24s ease;
+}
+
+@keyframes dg-in { from { opacity: 0; } to { opacity: 1; } }
+
+/* ─── Panel — dark-green editorial sheet with vignette + film grain ──────────── */
+
+.dg-panel {
+  position: relative;
+  background: radial-gradient(125% 95% at 50% 0%, #13301b 0%, #0b1810 56%, #060f09 100%);
+  border: 1px solid rgba(120, 200, 130, 0.12);
+  border-radius: 7px;
+  width: 100%;
+  max-width: 980px;
+  max-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 40px 120px rgba(0, 0, 0, 0.7);
+}
+
+.dg-grain {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.06;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ─── Header ────────────────────────────────────────────────────────────────── */
+
+.dg-header {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.1rem 1.6rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  flex-shrink: 0;
+}
+
+.dg-eyebrow {
+  font-family: "DM Mono", monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(120, 230, 120, 0.6);
+  border: 1px solid rgba(120, 230, 120, 0.22);
+  padding: 0.18rem 0.6rem;
+  border-radius: 2px;
+}
+
+.dg-title {
+  font-family: "Barlow Condensed", "Arial Narrow", Arial, sans-serif;
+  font-weight: 700;
+  font-size: 1.3rem;
+  letter-spacing: 0.01em;
+  color: #fff;
+  margin: 0;
+  flex: 1;
+}
+
+.dg-close {
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 50%;
+  width: 2rem; height: 2rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.8rem;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s, color 0.15s;
+  flex-shrink: 0;
+}
+
+.dg-close:hover { background: rgba(255, 255, 255, 0.15); color: #fff; }
+
+/* ─── Body ──────────────────────────────────────────────────────────────────── */
+
+.dg-pub {
+  position: relative;
+  z-index: 1;
+  padding: 1.9rem 1.9rem 1.6rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+}
+
+.dg-pub-head {
+  display: flex;
+  gap: 2.2rem;
+  align-items: flex-start;
+}
+
+/* ─── Faux-3D book ──────────────────────────────────────────────────────────── */
+
+.dg-book {
+  position: relative;
+  flex-shrink: 0;
+  perspective: 1300px;
+  padding: 0.5rem 1.4rem 1.4rem 0.5rem;
+}
+
+.dg-book-3d {
+  position: relative;
+  width: 190px;
+  transform-style: preserve-3d;
+  transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, -17deg));
+  transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
+  will-change: transform;
+}
+
+.dg-book-cover {
+  display: block;
+  width: 190px;
+  height: auto;
+  position: relative;
+  z-index: 2;
+  border-radius: 2px 5px 5px 2px;
+  box-shadow: 0 26px 50px rgba(0, 0, 0, 0.6);
+}
+
+/* Page fore-edge peeking from the right → reads as a stack of pages. */
+.dg-book-pages {
+  position: absolute;
+  top: 4px; bottom: 4px;
+  right: -10px;
+  width: 13px;
+  z-index: 1;
+  border-radius: 0 3px 3px 0;
+  transform: skewY(7deg);
+  background: repeating-linear-gradient(180deg, #efe9d8 0 1.5px, #c9be9e 1.5px 3px);
+  box-shadow: inset -3px 0 5px rgba(0, 0, 0, 0.28);
+}
+
+/* Spine ridge — dark gradient on the bound (left) edge. */
+.dg-book-spine {
+  position: absolute;
+  top: 0; bottom: 0; left: 0;
+  width: 12px;
+  z-index: 3;
+  border-radius: 2px 0 0 2px;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.55), rgba(255, 255, 255, 0.08) 55%, rgba(0, 0, 0, 0.18));
+  pointer-events: none;
+}
+
+/* Diagonal sheen across the cover. */
+.dg-book-gloss {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border-radius: 2px 5px 5px 2px;
+  background: linear-gradient(115deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0) 32%, rgba(255, 255, 255, 0) 70%, rgba(255, 255, 255, 0.08) 100%);
+  pointer-events: none;
+}
+
+.dg-book-shadow {
+  position: absolute;
+  left: 8%; right: 14%;
+  bottom: 0.55rem;
+  height: 22px;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0) 72%);
+  filter: blur(4px);
+  z-index: 0;
+}
+
+/* ─── Editorial meta ────────────────────────────────────────────────────────── */
+
+.dg-pub-meta { flex: 1; min-width: 0; }
+
+.dg-pub-kicker {
+  font-family: "DM Mono", monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(120, 230, 120, 0.65);
+  display: block;
+  margin-bottom: 0.55rem;
+}
+
+.dg-pub-booktitle {
+  font-family: "Barlow Condensed", "Arial Narrow", Arial, sans-serif;
+  font-weight: 700;
+  font-size: 1.85rem;
+  line-height: 1.08;
+  letter-spacing: 0.005em;
+  color: #fff;
+  margin: 0 0 0.5rem;
+}
+
+.dg-pub-by {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0 0 1rem;
+}
+
+.dg-pub-by strong { color: rgba(150, 235, 150, 0.95); font-weight: 600; }
+
+/* DOI/ISBN-style spec table in mono. */
+.dg-pub-spec {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.45rem 1.4rem;
+  margin: 0 0 1.15rem;
+  padding: 0.9rem 0 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.dg-pub-spec > div { display: flex; flex-direction: column; gap: 0.15rem; }
+
+.dg-pub-spec dt {
+  font-family: "DM Mono", monospace;
+  font-size: 0.56rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.34);
+}
+
+.dg-pub-spec dd {
+  margin: 0;
+  font-family: "DM Mono", monospace;
+  font-size: 0.74rem;
+  color: rgba(255, 255, 255, 0.78);
+  word-break: break-word;
+}
+
+.dg-pub-desc {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 0.82rem;
+  line-height: 1.62;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0 0 1.2rem;
+}
+
+.dg-pub-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: #06140a;
+  background: linear-gradient(180deg, #86e886, #4caf50);
+  border: 1px solid rgba(150, 235, 150, 0.5);
+  border-radius: 4px;
+  padding: 0.6rem 1.2rem;
+  text-decoration: none;
+  transition: filter 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+
+.dg-pub-btn:hover {
+  filter: brightness(1.07);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 22px rgba(76, 175, 80, 0.32);
+}
+
+/* ─── Pull-quote band ───────────────────────────────────────────────────────── */
+
+.dg-pub-quote {
+  position: relative;
+  margin: 0;
+  padding: 0.4rem 0 0.4rem 2.6rem;
+  border-left: 2px solid rgba(120, 230, 120, 0.45);
+  font-family: "Barlow Condensed", "Arial Narrow", Arial, sans-serif;
+  font-weight: 500;
+  font-size: 1.45rem;
+  line-height: 1.22;
+  color: rgba(255, 255, 255, 0.86);
+}
+
+.dg-pub-quote::before {
+  content: "\201C";
+  position: absolute;
+  left: 0.4rem;
+  top: -0.55rem;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 2.8rem;
+  line-height: 1;
+  color: rgba(120, 230, 120, 0.55);
+}
+
+/* ─── Embedded reader, framed like an open book ─────────────────────────────── */
+
+.dg-viewer-wrap {
+  position: relative;
+  border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #06120a;
+  padding: 1.5rem 0.6rem 0.6rem;
+  box-shadow: inset 0 2px 26px rgba(0, 0, 0, 0.5);
+}
+
+.dg-viewer-label {
+  position: absolute;
+  top: 0.5rem; left: 0.8rem;
+  font-family: "DM Mono", monospace;
+  font-size: 0.56rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.32);
+}
+
+.dg-viewer {
+  width: 100%;
+  height: 56vh;
+  min-height: 360px;
+  border-radius: 3px;
+  overflow: hidden;
+  background: #06120a;
+}
+
+/* Subtle center gutter so it reads like an open spread. */
+.dg-viewer-wrap[data-state="ok"]::after {
+  content: "";
+  position: absolute;
+  top: 1.5rem; bottom: 0.6rem;
+  left: 50%;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.18), transparent);
+  pointer-events: none;
+}
+
+.dg-viewer-wrap[data-state="fail"] .dg-viewer { height: 0; min-height: 0; }
+
+.dg-viewer-note {
+  position: absolute;
+  inset: 1.5rem 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
+  pointer-events: none;
+}
+
+.dg-viewer-wrap[data-state="fail"] { padding-bottom: 1.5rem; }
+.dg-viewer-wrap[data-state="fail"] .dg-viewer-note { position: static; }
+.dg-viewer-note a { color: rgba(150, 235, 150, 0.92); pointer-events: auto; }
+
+/* ─── Responsive ────────────────────────────────────────────────────────────── */
+
+@media (max-width: 680px) {
+  .dg-pub { padding: 1.4rem; }
+  .dg-pub-head { flex-direction: column; align-items: center; text-align: center; gap: 1.2rem; }
+  .dg-book { padding-bottom: 1.6rem; }
+  .dg-pub-spec { text-align: left; }
+  .dg-pub-booktitle { font-size: 1.55rem; }
+  .dg-viewer { height: 60vh; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dg-modal { animation: none; }
+  .dg-book-3d { transition: none; }
+  .dg-pub-btn { transition: none; }
+}

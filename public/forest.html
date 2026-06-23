@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rainforest Journey</title>
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  scrollbar-width: none;
+}
+html::-webkit-scrollbar { display: none; }
+
+body {
+  background: #000;
+  overflow-x: hidden;
+}
+
+/* ── Fixed cinematic stage ── */
+#stage {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+}
+
+/*
+  Each slide fills the stage.
+  Image is 148×148%, offset -24% each axis → ±24% translate room before edges appear.
+  At scale 1.15: effective 170% — still safely within bounds.
+*/
+.slide {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.slide-img {
+  position: absolute;
+  width: 148%;
+  height: 148%;
+  left: -24%;
+  top: -24%;
+  object-fit: cover;
+  transform-origin: center center;
+  will-change: transform;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* ── Cinematic overlays ── */
+#vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 80% 80% at center, transparent 32%, rgba(0,0,0,0.70) 100%),
+    linear-gradient(to bottom,
+      rgba(0,0,0,0.30) 0%,
+      transparent 15%,
+      transparent 85%,
+      rgba(0,0,0,0.45) 100%
+    );
+}
+
+#bars {
+  position: fixed;
+  inset: 0;
+  z-index: 51;
+  pointer-events: none;
+  border-top: 3.8vh solid #000;
+  border-bottom: 3.8vh solid #000;
+}
+
+/* ── Progress bar ── */
+#progress-track {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: rgba(255,255,255,0.08);
+  z-index: 200;
+  pointer-events: none;
+}
+#progress-fill {
+  height: 100%;
+  width: 0%;
+  background: rgba(255,255,255,0.42);
+}
+
+/* ── Scroll hint ── */
+#scroll-hint {
+  position: fixed;
+  bottom: 4.5vh;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 200;
+  pointer-events: none;
+  text-align: center;
+  transition: opacity 1.4s ease;
+}
+#scroll-hint-label {
+  font-family: 'Georgia', serif;
+  font-size: 0.58rem;
+  letter-spacing: 0.38em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.22);
+  display: block;
+  margin-bottom: 0.8rem;
+}
+#scroll-arrow {
+  width: 1px;
+  height: 2rem;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.25), transparent);
+  margin: 0 auto;
+  animation: arrPulse 2.2s ease-in-out infinite;
+  transform-origin: top center;
+}
+@keyframes arrPulse {
+  0%, 100% { transform: scaleY(0.4); opacity: 0.3; }
+  55%       { transform: scaleY(1.0); opacity: 0.8; }
+}
+</style>
+</head>
+<body>
+
+<!-- Tall scroll container — height set by JS, drives the timeline -->
+<div id="scroll-space"></div>
+
+<!-- Pinned cinematic viewport -->
+<div id="stage"></div>
+
+<!-- Always-on-top overlays -->
+<div id="vignette"></div>
+<div id="bars"></div>
+<div id="progress-track"><div id="progress-fill"></div></div>
+<div id="scroll-hint">
+  <span id="scroll-hint-label">scroll to enter the forest</span>
+  <div id="scroll-arrow"></div>
+</div>
+
+<!-- GSAP -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+
+<script>
+'use strict';
+gsap.registerPlugin(ScrollTrigger);
+
+// ─── IMAGE SEQUENCE — all 60 images in numerical order ───────────────────────
+var IMGS = [
+  'level-00','level-01','level-02','level-03','level-04','level-05',
+  'level-06','level-07','level-08','level-09','level-10','level-11',
+  'level-12','level-13','level-14','level-15','level-16','level-17',
+  'level-18','level-19','level-20','level-21','level-22','level-23',
+  'level-24','level-25','level-26','level-27','level-29','level-30',
+  'level-31','level-32','level-33','level-34','level-35','level-36',
+  'level-37','level-38','level-39','level-40','level-41','level-42',
+  'level-43','level-44','level-45','level-46','level-47','level-49',
+  'level-50','level-51','level-52','level-53','level-54','level-55',
+  'level-56','level-57','level-59','level-60','level-61','level-62'
+].map(function(n) { return '/levels/' + n + '.png'; });
+
+// ─── CAMERA PATHS [fromS, fromX%, fromY%, toS, toX%, toY%] ───────────────────
+// s  = scale factor (forward motion = s increases)
+// x+ = image right = camera pans left
+// y+ = image down  = camera tilts up
+// y- = image up    = camera tilts down (descent)
+// Each "to" flows into next entry's "from" — continuous handoff.
+var PATHS = [
+  // ── AERIAL SWEEP (00–12) — high altitude, slow majestic drift ────────────
+  [1.00,  0.0,  0.0,  1.04, -2.0, -1.0],   // 00
+  [1.04, -2.0, -1.0,  1.07, -3.8,  0.5],   // 01
+  [1.07, -3.8,  0.5,  1.03, -1.8,  1.8],   // 02 — natural correction
+  [1.03, -1.8,  1.8,  1.07,  0.5,  0.8],   // 03
+  [1.07,  0.5,  0.8,  1.10,  2.5, -0.5],   // 04 — drift right
+  [1.10,  2.5, -0.5,  1.06,  4.0, -1.8],   // 05
+  [1.06,  4.0, -1.8,  1.02,  2.0, -2.8],   // 06 — correction
+  [1.02,  2.0, -2.8,  1.06,  0.0, -1.5],   // 07 — sweep to center
+  [1.06,  0.0, -1.5,  1.09, -2.2, -0.5],   // 08 — drift left
+  [1.09, -2.2, -0.5,  1.12, -3.8,  0.8],   // 09
+  [1.12, -3.8,  0.8,  1.07, -1.5,  1.8],   // 10 — correction
+  [1.07, -1.5,  1.8,  1.10,  0.5,  0.8],   // 11
+  [1.10,  0.5,  0.8,  1.13,  2.5, -0.5],   // 12 — altitude dropping
+
+  // ── CANOPY DESCENT (13–20) — altitude drops, treetops rise to fill frame ─
+  [1.00, -1.0, -1.8,  1.05, -2.8, -3.2],   // 13
+  [1.05, -2.8, -3.2,  1.09, -4.2, -1.8],   // 14
+  [1.09, -4.2, -1.8,  1.04, -2.0, -0.8],   // 15 — correction
+  [1.04, -2.0, -0.8,  1.08,  0.5, -2.0],   // 16 — swing right
+  [1.08,  0.5, -2.0,  1.11,  2.8, -3.2],   // 17
+  [1.11,  2.8, -3.2,  1.07,  4.2, -1.5],   // 18
+  [1.07,  4.2, -1.5,  1.10,  2.0, -0.5],   // 19 — centering
+  [1.10,  2.0, -0.5,  1.13,  0.0,  0.5],   // 20 — leveled, entering canopy
+
+  // ── CANOPY WEAVE (21–27, 29) — threading between tree crowns ─────────────
+  [1.00,  2.0,  1.5,  1.06,  0.0,  3.0],   // 21 — weave begins
+  [1.06,  0.0,  3.0,  1.09, -2.8,  1.5],   // 22 — hard left
+  [1.09, -2.8,  1.5,  1.05, -4.8,  3.0],   // 23
+  [1.05, -4.8,  3.0,  1.09, -2.8,  4.5],   // 24 — deeper
+  [1.09, -2.8,  4.5,  1.12,  0.0,  3.2],   // 25 — correction right
+  [1.12,  0.0,  3.2,  1.08,  2.8,  1.5],   // 26 — weave right
+  [1.08,  2.8,  1.5,  1.11,  4.8,  0.0],   // 27 — hard right
+  [1.00, -2.0,  2.0,  1.06,  0.0,  0.5],   // 29 — reset, approaching trunks
+
+  // ── FOREST TRUNKS (30–36) — close, dramatic, tight spaces ────────────────
+  [1.00,  0.0,  0.0,  1.07,  2.2, -2.2],   // 30
+  [1.07,  2.2, -2.2,  1.10,  4.2, -1.0],   // 31
+  [1.10,  4.2, -1.0,  1.06,  2.0,  1.2],   // 32 — correction
+  [1.06,  2.0,  1.2,  1.09, -0.5,  2.8],   // 33 — swing left
+  [1.09, -0.5,  2.8,  1.12, -3.0,  1.5],   // 34
+  [1.12, -3.0,  1.5,  1.08, -4.5, -0.5],   // 35
+  [1.08, -4.5, -0.5,  1.11, -2.0, -2.2],   // 36 — upward correction
+
+  // ── FOREST FLOOR (37–44) — eye level, walking rhythm ─────────────────────
+  [1.00,  0.5,  2.2,  1.05,  2.5,  0.5],   // 37 — step right, rise
+  [1.05,  2.5,  0.5,  1.08,  4.0,  2.2],   // 38 — bob down
+  [1.08,  4.0,  2.2,  1.04,  2.2,  3.8],   // 39 — drop
+  [1.04,  2.2,  3.8,  1.07, -0.5,  2.0],   // 40 — swing left, rise
+  [1.07, -0.5,  2.0,  1.10, -2.8,  0.5],   // 41 — step left
+  [1.10, -2.8,  0.5,  1.06, -4.2,  2.2],   // 42 — bob down
+  [1.06, -4.2,  2.2,  1.09, -2.0,  3.8],   // 43 — drop
+  [1.09, -2.0,  3.8,  1.12,  0.0,  2.0],   // 44 — center, deer about to appear
+
+  // ── DEER SEQUENCE (45–47, 49–57, 59–62) — patient tracking ───────────────
+  [1.00,  0.0,  1.0,  1.04,  1.5,  0.0],   // 45 — deer spotted, tiny and distant
+  [1.04,  1.5,  0.0,  1.07,  3.0,  1.0],   // 46 — slow approach
+  [1.07,  3.0,  1.0,  1.03,  1.5,  2.0],   // 47 — deer still, camera steadies
+  [1.03,  1.5,  2.0,  1.06,  0.0,  1.0],   // 49 — reframe
+  [1.06,  0.0,  1.0,  1.09, -1.8,  0.0],   // 50 — deer turns head
+  [1.09, -1.8,  0.0,  1.05, -3.2,  1.0],   // 51 — deer faces camera
+  [1.05, -3.2,  1.0,  1.08, -1.5,  2.2],   // 52 — deer turns body
+  [1.08, -1.5,  2.2,  1.11,  0.0,  1.0],   // 53 — deer starts walking
+  [1.11,  0.0,  1.0,  1.07,  1.8,  0.0],   // 54 — camera follows right
+  [1.07,  1.8,  0.0,  1.10,  3.2, -1.2],   // 55 — deer picks up pace
+  [1.10,  3.2, -1.2,  1.06,  1.5, -2.2],   // 56 — deer passes behind trunk
+  [1.06,  1.5, -2.2,  1.09,  0.0, -1.0],   // 57 — reframe
+  [1.09,  0.0, -1.0,  1.05, -2.2,  0.0],   // 59 — deer reappears left
+  [1.05, -2.2,  0.0,  1.08, -4.0,  1.2],   // 60 — following
+  [1.08, -4.0,  1.2,  1.11, -2.0,  2.8],   // 61 — deer disappears into forest
+  [1.11, -2.0,  2.8,  1.15,  0.0,  1.2]    // 62 — camera continues alone
+];
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+function lerp(a, b, t) { return a + (b - a) * t; }
+
+// ─── SETUP ───────────────────────────────────────────────────────────────────
+var N = IMGS.length;     // 60
+
+// Provide scrollable height: each image = 100vh of scroll room
+document.getElementById('scroll-space').style.height = (N * 100) + 'vh';
+
+// ─── BUILD SLIDES ─────────────────────────────────────────────────────────────
+var stage  = document.getElementById('stage');
+var slides = [];
+
+IMGS.forEach(function(src, i) {
+  var p  = PATHS[i];
+  var fS = p[0], fX = p[1], fY = p[2];
+
+  var div = document.createElement('div');
+  div.className = 'slide';
+  // First slide starts fully opaque; all others hidden until timeline fades them in
+  div.style.opacity = i === 0 ? '1' : '0';
+
+  var img = document.createElement('img');
+  img.className = 'slide-img';
+  img.src       = src;
+  img.alt       = '';
+  img.decoding  = 'async';
+  img.draggable = false;
+  // Park each image at its FROM transform
+  img.style.transform = 'scale(' + fS + ') translate(' + fX + '%, ' + fY + '%)';
+
+  div.appendChild(img);
+  stage.appendChild(div);
+  slides.push({ div: div, img: img });
+});
+
+// ─── BUILD GSAP TIMELINE ─────────────────────────────────────────────────────
+// Timeline units: 1 unit = one scroll "page" (100vh).
+// Total duration = N (60 units = 6000vh of scroll).
+//
+// Per image i:
+//   Ken Burns : plays [i, i+1] — full one page of scroll
+//   Fade in   : plays [i-0.30, i] — 30vh of lead-in   (skip for i=0)
+//   Fade out  : plays [i+0.70, i+1.0] — 30vh of exit  (skip for i=N-1)
+//
+// Crossfade zone [i+0.70, i+1.0] = 30vh where both image i and i+1 are visible and moving.
+
+var tl = gsap.timeline({ defaults: { ease: 'none' } });
+
+slides.forEach(function(slide, i) {
+  var p  = PATHS[i];
+  var fS = p[0], fX = p[1], fY = p[2];
+  var tS = p[3], tX = p[4], tY = p[5];
+
+  // Ken Burns: proxy drives the custom transform string
+  var proxy = { t: 0 };
+  tl.to(proxy, {
+    t: 1,
+    duration: 1,
+    onUpdate: function() {
+      var t = proxy.t;
+      slide.img.style.transform =
+        'scale(' + lerp(fS, tS, t) + ') ' +
+        'translate(' + lerp(fX, tX, t) + '%, ' + lerp(fY, tY, t) + '%)';
+    }
+  }, i);
+
+  // Fade in (not first image)
+  if (i > 0) {
+    tl.to(slide.div, { opacity: 1, duration: 0.30 }, i - 0.30);
+  }
+
+  // Fade out (not last image)
+  if (i < N - 1) {
+    tl.to(slide.div, { opacity: 0, duration: 0.30 }, i + 0.70);
+  }
+});
+
+// ─── SCROLL TRIGGER ──────────────────────────────────────────────────────────
+// scrub: 1.2 → camera has 1.2s of inertia, feels weighted and physical.
+// No 'pin' needed — #stage is already position:fixed.
+var progressFill = document.getElementById('progress-fill');
+
+ScrollTrigger.create({
+  animation: tl,
+  trigger:   '#scroll-space',
+  start:     'top top',
+  end:       'bottom bottom',
+  scrub:     1.2,
+  invalidateOnRefresh: true,
+  onUpdate: function(self) {
+    progressFill.style.width = (self.progress * 100) + '%';
+  }
+});
+
+// ─── SCROLL HINT ─────────────────────────────────────────────────────────────
+var hint = document.getElementById('scroll-hint');
+window.addEventListener('scroll', function() {
+  hint.style.opacity = '0';
+  setTimeout(function() { if (hint.parentNode) hint.remove(); }, 1500);
+}, { once: true, passive: true });
+</script>
+</body>
+</html>
