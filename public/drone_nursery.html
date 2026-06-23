@@ -130,18 +130,21 @@
   .load{position:absolute;inset:0;display:flex;align-items:center;
       justify-content:center;z-index:9;color:var(--accent-bright);font-family:"DM Mono",monospace;
       font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;background:var(--bg)}
-  /* Stack on narrower viewports: drone parked in the top band, text below it.
-     The drone is confined to the top here so it doesn't cover the text on phones. */
+  /* Phones/tablets: turn the split into a SCROLLABLE vertical flow so the drone,
+     text and control card stack cleanly and never overlap. The backdrop stays
+     absolute (fills the taller stage); only the loader is pinned to the viewport. */
   @media(max-width:980px){
-    model-viewer{inset:0 auto auto 0;width:100vw;height:48vh}
-    .load{inset:0 0 auto 0;height:48vh}
-    .text-scrim{background:linear-gradient(0deg,rgba(4,9,5,.8) 0%,rgba(4,9,5,.34) 50%,transparent 84%)}
-    .hero{left:0;right:0;top:49vh;bottom:0;width:100%;height:auto;align-items:center;text-align:center;
-        justify-content:flex-start;padding:max(3vh,20px) 22px 92px}
+    html,body{height:auto;min-height:100%}
+    .stage{height:auto;min-height:100vh;overflow:visible}
+    .load{position:fixed}
+    .text-scrim{background:linear-gradient(180deg,rgba(4,9,5,.36) 0%,rgba(4,9,5,.5) 100%)}
+    model-viewer{position:relative;left:auto;top:auto;width:100%;height:44vh;display:block}
+    .hero{position:relative;left:auto;top:auto;bottom:auto;width:100%;height:auto;
+        align-items:center;text-align:center;justify-content:flex-start;padding:1.6rem 20px .5rem}
     .hero-role,.hero-actions,.hero-contact{justify-content:center}
     .hero-desc{margin:.9rem auto 0}
-    .panel{left:50%;bottom:14px;transform:translateX(-50%)}
-    .hint{top:14px;right:auto;left:50%;transform:translateX(-50%)}
+    .panel{position:relative;left:auto;bottom:auto;transform:none;width:fit-content;margin:1.3rem auto 2rem}
+    .hint{display:none}
   }
   @media(max-width:640px){
     .hint{display:none}
