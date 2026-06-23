@@ -948,8 +948,10 @@
     justify-content: flex-end;
     padding: 1rem 1.25rem 2rem;
   }
-  .ms-welcome-heading { font-size: clamp(1.8rem, 7vw, 2.8rem); }
-  .ms-welcome-desc    { max-width: 100%; }
+  .ms-welcome-sub     { font-size: 0.6rem; margin-bottom: 0.55rem; }
+  .ms-welcome-heading { font-size: clamp(1.7rem, 7.4vw, 2.6rem); line-height: 1.05; margin-bottom: 0.7rem; }
+  .ms-welcome-greeting{ font-size: 0.92rem; }
+  .ms-welcome-desc    { max-width: 100%; font-size: 0.78rem; line-height: 1.62; }
 
   /* About overlay — mobile (no CTA on slides 0-1) */
   .ms-about-overlay {
@@ -981,9 +983,12 @@
     padding: 0.4rem 0.85rem;
   }
 
-  /* Welcome overlay — extra bottom padding so action buttons don't overlap text */
+  /* Welcome overlay — strong bottom scrim + clearance so the text reads over the
+     photo and the action bar never overlaps it on phones. */
   .ms-welcome-overlay {
-    padding: 1rem 1.25rem 5.5rem;
+    padding: 1.25rem 1.25rem 5.75rem;
+    background:
+      linear-gradient(to top, rgba(4,9,5,.95) 0%, rgba(4,9,5,.74) 30%, rgba(4,9,5,.3) 54%, transparent 76%);
   }
 
   /* Action buttons — full-width row centered at bottom */

@@ -343,7 +343,7 @@ export default function MorphScroll() {
               <div ref={welcomeRef} className="ms-layer ms-hero-layer" style={{ opacity: 1, zIndex: 1 }}>
                 <HeroSplit active={activeStop === 0} />
               </div>
-              <img ref={aboutRef} className="ms-layer ms-layer--cover" src="/hero/about.png"
+              <img ref={aboutRef} className="ms-layer ms-layer--cover" src="/hero/About.png"
                    alt="Tentang Saya — Agung Laksono S.Hut, Profesional Kehutanan dan Pengembang Montana Camera AI"
                    decoding="async" style={{ opacity: 0, zIndex: 2 }} />
 
