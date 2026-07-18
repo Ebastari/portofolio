@@ -1,16 +1,17 @@
 {
   "name": "Agung Laksono — Reclamation Portfolio",
   "short_name": "AL Portfolio",
-  "description": "From Disturbed Land to Intelligent Restoration",
+  "description": "Portofolio Agung Laksono — Spesialis Reklamasi & Revegetasi Pascatambang, Kalimantan Selatan",
+  "lang": "id",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#0d1a0d",
   "theme_color": "#0d1a0d",
   "icons": [
     {
-      "src": "./favicon.svg",
+      "src": "./favicon.ico",
       "sizes": "any",
-      "type": "image/svg+xml"
+      "type": "image/x-icon"
     }
   ]
 }

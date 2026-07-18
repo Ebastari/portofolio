@@ -11,7 +11,17 @@ export default function App() {
   return (
     <>
       {entered && <MorphScroll />}
-      {!entered && <DroneIntro onEnter={() => setEntered(true)} />}
+      {!entered && (
+        <DroneIntro
+          onEnter={() => {
+            // The build-injected crawler content (#seo-static) must leave the
+            // flow before ScrollSmoother measures the page, or its height would
+            // add dead scroll distance past the timeline's end.
+            document.getElementById("seo-static")?.remove();
+            setEntered(true);
+          }}
+        />
+      )}
     </>
   );
 }

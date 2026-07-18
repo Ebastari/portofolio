@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ebastari.github.io/portofolio/sitemap.xml

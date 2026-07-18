@@ -22,3 +22,80 @@ body {
 #root {
   width: 100%;
 }
+
+/* ── Static crawler content (injected at build by seo-prerender.ts) ──────────
+   Real, in-flow semantic HTML under the fixed DroneIntro curtain. While the
+   curtain is up, body scroll is locked so no scrollbar appears behind it; the
+   block is removed in App.tsx the moment the visitor presses "Explore". */
+
+body:has(.drone-intro) {
+  overflow: hidden;
+}
+
+.seo-static {
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 4.5rem 1.5rem 6rem;
+  font-family: "Inter", system-ui, sans-serif;
+  color: #cfe0cf;
+  line-height: 1.7;
+}
+
+.seo-static h1 {
+  font-family: "Barlow Condensed", "Inter", sans-serif;
+  font-size: clamp(2rem, 5vw, 3rem);
+  line-height: 1.12;
+  color: #fff;
+  margin-bottom: 0.75rem;
+}
+
+.seo-static h2 {
+  font-family: "Barlow Condensed", "Inter", sans-serif;
+  font-size: clamp(1.4rem, 3.4vw, 2rem);
+  line-height: 1.18;
+  color: #eaf4ea;
+  margin-bottom: 0.6rem;
+}
+
+.seo-static .seo-lead {
+  font-size: 1.06rem;
+  color: #a8c3a8;
+}
+
+.seo-static .seo-kicker {
+  font-family: "DM Mono", monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #7fa77f;
+  margin-bottom: 0.35rem;
+}
+
+.seo-static section {
+  margin-top: 3rem;
+}
+
+.seo-static p + p {
+  margin-top: 0.7rem;
+}
+
+.seo-static img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  margin: 0.8rem 0 1rem;
+}
+
+.seo-static a {
+  color: #a0ff6e;
+  text-underline-offset: 3px;
+}
+
+.seo-static ul {
+  padding-left: 1.2rem;
+  margin-top: 0.6rem;
+}
+
+.seo-static li {
+  margin-top: 0.4rem;
+}
