@@ -14,7 +14,7 @@ import { LEVELS } from "./src/levels";
 // No display:none / visibility tricks are used (cloaking-safe).
 // ─────────────────────────────────────────────────────────────────────────────
 
-const SITE_URL = "https://ebastari.github.io/portofolio/";
+const SITE_URL = "https://www.montanawana.org/";
 const CV_PATH = "./cv/CV-Agung-Laksono-Reklamasi-Revegetasi.pdf";
 
 // Scene 1 narrations (00–11) ride frames 1..152; pick the frame active at each
