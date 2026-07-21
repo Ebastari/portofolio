@@ -27,14 +27,44 @@ const REST_TILT = "-17deg"; // book's resting yaw — gives 3D presence before a
 export default function DocumentationGallery({ onClose }: Props) {
   const viewerRef = useRef<HTMLDivElement>(null);
   const bookRef   = useRef<HTMLDivElement>(null);
+  const panelRef  = useRef<HTMLDivElement>(null);
   // null = still trying, true = embedded reader live, false = embed unavailable
   const [viewerOk, setViewerOk] = useState<boolean | null>(null);
 
-  // Close on Escape.
+  // Close on Escape, keep Tab inside the dialog, and hand focus back to whatever
+  // opened it. Without the trap, tabbing walks out into the pinned stage behind
+  // the backdrop with nothing visible to indicate where focus went.
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    const opener = document.activeElement as HTMLElement | null;
+    panelRef.current?.querySelector<HTMLElement>(".dg-close")?.focus();
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") { onClose(); return; }
+      if (e.key !== "Tab") return;
+
+      const panel = panelRef.current;
+      if (!panel) return;
+      const focusable = Array.from(
+        panel.querySelectorAll<HTMLElement>('a[href], button, [tabindex]:not([tabindex="-1"])'),
+      ).filter((el) => el.offsetParent !== null);
+      if (!focusable.length) return;
+
+      const first = focusable[0];
+      const last  = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+
     document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      opener?.focus?.();
+    };
   }, [onClose]);
 
   // Cursor parallax on the faux-3D book (skipped when reduced-motion is on).
@@ -103,7 +133,7 @@ export default function DocumentationGallery({ onClose }: Props) {
 
   return (
     <div className="dg-modal" onClick={onClose} role="dialog" aria-modal="true" aria-label="Publikasi">
-      <div className="dg-panel" onClick={(e) => e.stopPropagation()}>
+      <div className="dg-panel" ref={panelRef} onClick={(e) => e.stopPropagation()}>
         <div className="dg-grain" aria-hidden="true" />
 
         {/* Header */}

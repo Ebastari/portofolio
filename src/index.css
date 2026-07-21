@@ -23,6 +23,14 @@ body {
   width: 100%;
 }
 
+/* Baseline focus ring for anything not covered by a component rule (the SEO
+   static block, the drone intro). Component styles override it where the art
+   direction calls for something tighter. */
+:focus-visible {
+  outline: 2px solid rgba(140, 235, 120, 0.95);
+  outline-offset: 3px;
+}
+
 /* ── Static crawler content (injected at build by seo-prerender.ts) ──────────
    Real, in-flow semantic HTML under the fixed DroneIntro curtain. While the
    curtain is up, body scroll is locked so no scrollbar appears behind it; the

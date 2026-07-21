@@ -79,15 +79,28 @@
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 50%;
   width: 2rem; height: 2rem;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.82);
   font-size: 0.8rem;
   cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   transition: background 0.15s, color 0.15s;
   flex-shrink: 0;
+  position: relative;
+  touch-action: manipulation;
 }
 
 .dg-close:hover { background: rgba(255, 255, 255, 0.15); color: #fff; }
+
+/* Hit area extends to 44px without growing the 2rem visual circle. */
+.dg-close::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 44px;
+  height: 44px;
+  transform: translate(-50%, -50%);
+}
 
 /* ─── Body ──────────────────────────────────────────────────────────────────── */
 
@@ -230,7 +243,7 @@
   font-size: 0.56rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.34);
+  color: rgba(255, 255, 255, 0.62);   /* was .34 → ≈3.0:1 on the panel gradient */
 }
 
 .dg-pub-spec dd {
@@ -315,7 +328,7 @@
   font-size: 0.56rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.32);
+  color: rgba(255, 255, 255, 0.6);    /* was .32 → ≈2.8:1 on the reader frame */
 }
 
 .dg-viewer {
@@ -357,6 +370,21 @@
 .dg-viewer-wrap[data-state="fail"] .dg-viewer-note { position: static; }
 .dg-viewer-note a { color: rgba(150, 235, 150, 0.92); pointer-events: auto; }
 
+/* ─── Focus & touch ─────────────────────────────────────────────────────────── */
+/* The modal previously had no focus styling at all — keyboard users could tab
+   through it blind. Matches the green ring used on the stage. */
+
+.dg-close:focus-visible,
+.dg-pub-btn:focus-visible,
+.dg-viewer-note a:focus-visible {
+  outline: 2px solid rgba(140, 235, 120, 0.95);
+  outline-offset: 3px;
+}
+
+@media (pointer: coarse) {
+  .dg-pub-btn { min-height: 44px; touch-action: manipulation; }
+}
+
 /* ─── Responsive ────────────────────────────────────────────────────────────── */
 
 @media (max-width: 680px) {
@@ -366,6 +394,13 @@
   .dg-pub-spec { text-align: left; }
   .dg-pub-booktitle { font-size: 1.55rem; }
   .dg-viewer { height: 60vh; }
+}
+
+/* Landscape phones — min-height: 360px alone overflows the 92vh panel. */
+@media (max-height: 520px) {
+  .dg-panel  { max-height: 96vh; }
+  .dg-viewer { height: 46vh; min-height: 180px; }
+  .dg-pub    { padding: 1.1rem 1.2rem; gap: 1.1rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
