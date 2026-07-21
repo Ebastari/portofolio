@@ -3,11 +3,13 @@ import react from '@vitejs/plugin-react'
 import fs from 'fs'
 import path from 'path'
 import seoPrerender from './seo-prerender'
+import contactInject from './contact-inject'
 
 export default defineConfig({
   plugins: [
     react(),
     seoPrerender(),
+    contactInject(),
     {
       name: 'serve-public-images',
       configureServer(server) {

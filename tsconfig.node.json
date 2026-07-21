@@ -20,5 +20,5 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["vite.config.ts", "seo-prerender.ts", "src/levels.ts"]
+  "include": ["vite.config.ts", "seo-prerender.ts", "contact-inject.ts", "src/levels.ts", "src/contact.ts"]
 }
