@@ -1,5 +1,4 @@
 User-agent: *
 Allow: /
-Disallow: /cv/
 
 Sitemap: https://www.montanawana.org/sitemap.xml

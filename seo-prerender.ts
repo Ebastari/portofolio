@@ -15,7 +15,6 @@ import { LEVELS } from "./src/levels";
 // ─────────────────────────────────────────────────────────────────────────────
 
 const SITE_URL = "https://www.montanawana.org/";
-const CV_PATH = "./cv/CV-Agung-Laksono-Reklamasi-Revegetasi.pdf";
 
 // Scene 1 narrations (00–11) ride frames 1..152; pick the frame active at each
 // stop. Scene 2 narrations (12–17) already carry a real representative frame in
@@ -85,7 +84,6 @@ ${sections}
           <li><a href="https://linkedin.com/in/agung-laksono-250524211" rel="me">Profil LinkedIn Agung Laksono</a></li>
           <li><a href="https://github.com/Ebastari" rel="me">GitHub Ebastari — 770+ kontribusi</a></li>
           <li><a href="https://camera.montana-tech.info/">Montana Camera AI — aplikasi monitoring reklamasi berbasis AI</a></li>
-          <li><a href="${CV_PATH}">Unduh CV Agung Laksono — Spesialis Reklamasi &amp; Revegetasi (PDF)</a></li>
           <li><a href="${SITE_URL}">Beranda portofolio</a></li>
         </ul>
       </section>
