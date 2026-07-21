@@ -16,7 +16,15 @@ export default function DroneIntro({ onEnter }: { onEnter: () => void }) {
 
   useEffect(() => {
     function onMessage(e: MessageEvent) {
-      if (e.data && e.data.type === "drone:explore") setLeaving(true);
+      if (e.data && e.data.type === "drone:explore") {
+        // MorphScroll isn't mounted until onEnter fires at the END of the 0.65s
+        // fade, so for that whole fade the only thing behind the thinning curtain
+        // is the prerendered crawler block — it would visibly bleed through. Drop
+        // it as the fade starts; App.tsx removes it again on enter as a fallback
+        // (and stays the guarantee that it is gone before ScrollSmoother measures).
+        document.getElementById("seo-static")?.remove();
+        setLeaving(true);
+      }
     }
     window.addEventListener("message", onMessage);
     return () => window.removeEventListener("message", onMessage);
